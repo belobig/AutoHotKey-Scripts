@@ -1,0 +1,118 @@
+:*:++::
+Loop
+{
+    FileReadLine, line, C:\Users\kmswift\Desktop\ACCBATCH\Claims.txt, %A_Index%
+    if ErrorLevel
+                break
+;;Opens Claim in Facets;;
+                Send ^O%line% 
+                send {enter}
+                sleep, 2000 
+FormatTime, CurrentDate,, MM/dd/yyyy
+send {tab 4} 
+send %currentdate%
+;;Adjudication;;
+                Send {f3}
+                sleep, 500
+                                loop
+                                {
+                ImageSearch, FoundX, FoundY, -8, -8, 1696, 1026,  C:\Users\kmswift\Desktop\ACCBATCH\adjudication.png
+                                If ErrorLevel = 1
+                                break
+                                }
+                sleep, 1000
+
+                                Send {f4}
+                                                               loop
+                                {
+                ImageSearch, FoundX, FoundY, -8, -8, 1696, 1026,  C:\Users\kmswift\Desktop\ACCBATCH\saving.png
+                                If ErrorLevel = 1
+                                break
+                                }
+
+var := line+1 
+send ^o
+send %var%
+send {enter}
+sleep, 2000
+
+                Send {f3}
+                sleep, 500
+                                loop
+                                {
+                ImageSearch, FoundX, FoundY, -8, -8, 1696, 1026,  C:\Users\kmswift\Desktop\ACCBATCH\adjudication.png
+                                If ErrorLevel = 1
+                                break
+                                }
+                sleep, 1000
+
+
+                Send {f5}
+                sleep, 250
+                Send {enter}
+                sleep, 250
+                send pppppppp{enter}
+                                loop
+                                {
+                ImageSearch, FoundX, FoundY, -8, -8, 1696, 1026,  C:\Users\kmswift\Desktop\ACCBATCH\saving.png
+                                If ErrorLevel = 1
+                                break
+                                }
+                sleep, 3000
+
+
+                                IfWinExist CSD - WIN/NT
+                                {
+                                WinActivate
+                                }
+                                sleep, 1000
+                                ControlSend, Edit5, {bs 12}, CSD - WIN/NT,,,
+                                ControlSend, Edit5, %line%, CSD - WIN/NT,,,
+                                sleep, 1000
+                                send {enter}
+                                sleep, 1000
+                                send {down}
+                                send {enter}
+                                sleep, 1000
+                                send {tab}
+                                send PERS
+                                send ^a
+                                sleep, 1000
+                                sendinput morinda holding GSE
+                                sleep, 1000
+                                send ^a
+                                sleep, 250
+                                Send {enter}
+                                sleep, 1000
+^g
+ControlSend, Edit1, OPCLM200, AWD - change Queue,,,
+send {enter}
+
+                                IfWinExist AWD - Work Lookup Results
+                                {
+                                WinActivate
+                                }
+                                Send !x
+
+IfWinExist Facets - Hospital Claims Processing
+                                {
+                                WinActivate
+                                }
+
+}
+MsgBox, The end of the file has been reached or there was a problem.
+return
+
+
+
+^q:: ;Panic!!
+DetectHiddenWindows, On 
+WinGet, IDList ,List, ahk_class AutoHotkey 
+Loop %IDList% 
+  { 
+  ID:=IDList%A_Index% 
+  WinGetTitle, ATitle, ahk_id %ID% 
+  IfNotInString, ATitle, %A_ScriptName% 
+    WinClose, %ATitle% ;close instead of pause and suspend
+  } 
+ExitApp
